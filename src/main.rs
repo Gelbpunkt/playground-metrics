@@ -1,5 +1,5 @@
 #![deny(clippy::pedantic)]
-#![allow(clippy::similar_names)]
+#![allow(clippy::similar_names, clippy::wildcard_imports)]
 
 use std::{collections::HashMap, sync::Arc};
 
@@ -13,6 +13,7 @@ use models::{Metric, Position, Unit};
 use units::*;
 type UnitMap = HashMap<&'static str, &'static Unit>;
 
+#[allow(clippy::too_many_lines)]
 fn get_units() -> UnitMap {
     HashMap::from([
         ("kg", &KILOGRAM),
