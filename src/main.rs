@@ -376,7 +376,13 @@ async fn run() {
                 let mut text = normalized.clone();
 
                 for regex in regexes.iter() {
-                    while let Some(cap) = regex.captures(&text) {
+                    let mut n = 0;
+
+                    // We have to re-create the iterator every time to keep indexes
+                    while let Some(cap) = regex.captures_iter(&text).nth(n) {
+                        // Return the next group in the next iteration
+                        n += 1;
+
                         let mut amount: f64 =
                             lexical_core::parse(cap["amount"].as_bytes()).unwrap();
 
