@@ -76,6 +76,7 @@ fn get_units() -> UnitMap {
         ("kilometre", &KILOMETRE),
         ("mile", &MILE),
         ("miles", &MILE),
+        ("ft", &FOOT),
         ("foot", &FOOT),
         ("feet", &FOOT),
         ("in", &INCH),
@@ -150,6 +151,26 @@ fn get_units() -> UnitMap {
         ("square kilometers", &QKM),
         ("square kilometre", &QKM),
         ("square kilometres", &QKM),
+        ("ft²", &QFT),
+        ("qft", &QFT),
+        ("sqft", &QFT),
+        ("ft2", &QFT),
+        ("square foot", &QFT),
+        ("square feet", &QFT),
+        ("squarefoot", &QFT),
+        ("squarefeet", &QFT),
+        ("mi²", &QMI),
+        ("qmi", &QMI),
+        ("sqmi", &QMI),
+        ("mi2", &QMI),
+        ("square mile", &QMI),
+        ("square miles", &QMI),
+        ("squaremile", &QMI),
+        ("squaremiles", &QMI),
+        ("football field", &FOOTBALL_FIELD),
+        ("football fields", &FOOTBALL_FIELD),
+        ("soccer field", &FOOTBALL_FIELD),
+        ("soccer fields", &FOOTBALL_FIELD),
         ("m³", &CUBICMETRE),
         ("m3", &CUBICMETRE),
         ("cubicmeter", &CUBICMETRE),
@@ -176,6 +197,7 @@ fn get_units() -> UnitMap {
         ("cubic decimetre", &LITRE),
         ("cubic decimeters", &LITRE),
         ("cubic decimetres", &LITRE),
+        ("l", &LITRE),
         ("liter", &LITRE),
         ("litre", &LITRE),
         ("liters", &LITRE),
@@ -258,7 +280,6 @@ fn get_units() -> UnitMap {
         ("usd", &USD),
         ("dollar", &USD_SUFFIX),
         ("dollars", &USD_SUFFIX),
-        ("ft", &HUF),
         ("huf", &HUF),
         ("fts", &HUF_SUFFIX),
         ("hufs", &HUF_SUFFIX),
@@ -316,7 +337,7 @@ async fn run() {
 
     // Regex 2: Match a unit after the amount
     let mut unit_after_regex =
-        String::from("(?P<amount>\\d+(?:\\.\\d+)?)(?P<kilo>k\\s)?\\s*(?P<unit>");
+        String::from("(?:^|\\b)(?P<amount>\\d+(?:\\.\\d+)?)(?P<kilo>k\\s)?\\s*(?P<unit>");
 
     for (idx, (key, _)) in units_sorted
         .into_iter()
@@ -364,6 +385,12 @@ async fn run() {
                         }
 
                         let unit_value = cap["unit"].to_lowercase();
+
+                        // Special case: 4G and 5G should be ignored
+                        if unit_value == "g" && (amount == 4.0 || amount == 5.0) {
+                            continue;
+                        }
+
                         let unit = units.get(unit_value.as_str()).unwrap();
 
                         let davincis = (unit.in_davincis(amount) * 100.0).round() / 100.0;

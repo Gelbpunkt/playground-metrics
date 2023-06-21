@@ -117,6 +117,21 @@ pub static QKM: Unit = Unit {
     position: Position::AfterAmount,
     factor: 0.000_001,
 };
+pub static QFT: Unit = Unit {
+    metric: Metric::Area,
+    position: Position::AfterAmount,
+    factor: 10.764_262_648_008_613,
+};
+pub static QMI: Unit = Unit {
+    metric: Metric::Area,
+    position: Position::AfterAmount,
+    factor: 0.000_000_386_100_386_100_386_1,
+};
+pub static FOOTBALL_FIELD: Unit = Unit {
+    metric: Metric::Area,
+    position: Position::AfterAmount,
+    factor: 0.000_140_056_022_408_963_58,
+};
 
 pub static CUBICMETRE: Unit = Unit {
     metric: Metric::Volume,
