@@ -301,6 +301,12 @@ fn get_units() -> UnitMap {
         ("rmb", &CNY),
         ("yuan", &CNY_SUFFIX),
         ("chinese yuan", &CNY_SUFFIX),
+        ("pln", &PLN_SUFFIX),
+        ("zloty", &PLN_SUFFIX),
+        ("złoty", &PLN_SUFFIX),
+        ("zł", &PLN_SUFFIX),
+        ("zl", &PLN_SUFFIX),
+        ("arix", &PLN_SUFFIX),
     ])
 }
 
@@ -381,8 +387,6 @@ async fn run() {
                     // We have to re-create the iterator every time to keep indexes
                     while let Some(cap) = regex.captures_iter(&text).nth(n) {
                         // Return the next group in the next iteration
-                        n += 1;
-
                         let mut amount: f64 =
                             lexical_core::parse(cap["amount"].as_bytes()).unwrap();
 
@@ -394,6 +398,7 @@ async fn run() {
 
                         // Special case: 4G and 5G should be ignored
                         if unit_value == "g" && (amount == 4.0 || amount == 5.0) {
+                            n += 1;
                             continue;
                         }
 

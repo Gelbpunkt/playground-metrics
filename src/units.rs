@@ -291,3 +291,8 @@ pub static CNY_SUFFIX: Unit = Unit {
     position: Position::AfterAmount,
     factor: 1.0,
 };
+pub static PLN_SUFFIX: Unit = Unit {
+    metric: Metric::Currency,
+    position: Position::AfterAmount,
+    factor: 0.562_393_289_388_296_7,
+};
