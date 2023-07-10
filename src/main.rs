@@ -339,11 +339,11 @@ async fn run() {
         }
         unit_before_regex.push_str(&regex::escape(key));
     }
-    unit_before_regex.push_str(")\\s?(?P<amount>\\d+(?:\\.\\d+)?)(?P<kilo>k\\s)?");
+    unit_before_regex.push_str(")\\s?(?P<amount>\\d+(?:[.,]\\d+)?)(?P<kilo>k\\s)?");
 
     // Regex 2: Match a unit after the amount
     let mut unit_after_regex =
-        String::from("(?:^|\\b)(?P<amount>\\d+(?:\\.\\d+)?)(?P<kilo>k\\s)?\\s*(?P<unit>");
+        String::from("(?:^|\\b)(?P<amount>\\d+(?:[.,]\\d+)?)(?P<kilo>k\\s)?\\s*(?P<unit>");
 
     for (idx, (key, _)) in units_sorted
         .into_iter()
@@ -387,8 +387,16 @@ async fn run() {
                     // We have to re-create the iterator every time to keep indexes
                     while let Some(cap) = regex.captures_iter(&text).nth(n) {
                         // Return the next group in the next iteration
-                        let mut amount: f64 =
-                            lexical_core::parse(cap["amount"].as_bytes()).unwrap();
+                        let mut amount_str = cap["amount"].as_bytes().to_vec();
+
+                        // Replace , with . for the sake of parsing
+                        for c in amount_str.iter_mut() {
+                            if *c == b',' {
+                                *c = b'.';
+                            }
+                        }
+
+                        let mut amount: f64 = lexical_core::parse(&amount_str).unwrap();
 
                         if cap.name("kilo").is_some() {
                             amount *= 1000.0;
